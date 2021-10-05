@@ -55,12 +55,12 @@ N_CELLS=len(L)
 guideID=1; enhancerID=1; geneID=1;
 for e in range(numEnhancers):
     for g in range(guidesPerEnhancer):
-        print(guideID,enhancerID,sep="\t",file=GUIDES_ENHANCERS)
+        print(guideID,enhancerID,file=GUIDES_ENHANCERS)
         for cell in range(N_CELLS):
             cellID=cell+1
             p=np.random.uniform(0,1)
             guidePresent=1 if p<r else 0
-            print(guideID,cellID,guidePresent,sep="\t",file=GUIDE_TRUTH)
+            print(guideID,cellID,guidePresent,file=GUIDE_TRUTH)
         guideID+=1
     enhancerID+=1
 GUIDE_TRUTH.close()

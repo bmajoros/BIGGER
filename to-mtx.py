@@ -25,9 +25,18 @@ with open(infile,"rt") as IN:
         fields=line.rstrip().split()
         if(len(fields)!=3): raise Exception("Wrong number of fields: "+line)
         fields=[int(x) for x in fields]
-        field1.insert(fields[0])
-        field2.insert(fields[1])
-        field3+=fields[2]
+        field1.add(fields[0])
+        field2.add(fields[1])
+        field3Sum+=fields[2]
 IN.close()
-#with gzip.open(outfile,"wt") as OUT:
+
+field1=len(field1); field2=len(field2); field3=field3Sum
+with gzip.open(outfile,"wt") as OUT:
+    print("%%MatrixMarket matrix coordinate integer general",file=OUT)
+    print(field1,field2,field3,file=OUT)
+    with open(infile,"rt") as IN:
+        for line in IN:
+            fields=line.rstrip().split()
+            print(fields[0],fields[1],fields[2],file=OUT)
+
     
