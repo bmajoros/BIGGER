@@ -49,10 +49,8 @@ with gzip.open(truthFile,"rt") as IN:
         (guideID,cellID,present)=fields
         if(cellID>numCells): numCells=cellID
         if(guideID not in guideWorks): next
-        #print("guideID=",guideID,"enhancerID=",thisEnhancer,
-        #      "guidesInEnhancer=",guidesInEnhancer[thisEnhancer])
         if(guideID in guidesInEnhancer[thisEnhancer]):
-            perturbedCells.add(cellID)
+            if(present): perturbedCells.add(cellID)
         else:
             muBeta=meanRNA*beta
             for i in range(numCells):
@@ -62,15 +60,19 @@ with gzip.open(truthFile,"rt") as IN:
                 P=(var-mu)/var
                 N=mu*mu/(var-mu)
                 count=np.random.negative_binomial(N,P)
-                #print("beta=",beta,"mu=",muBeta,"meanRNA=",meanRNA,"var=",
-                #      var,"phi=",phi,"P=",P,"N=",N,"count=",count)
                 print(geneID,cellID,count,file=RNA)
                 status=1 if cellID in perturbedCells else 0
                 print(geneID,cellID,status,file=PERTURBATION)
             thisEnhancer+=1
             geneID+=1
             perturbedCells=set()
-                
-            ### need to push back the previous guide or it will get lost!
+
+            # Process the next guide, which is not in the enhancer
+            # we just processed:
+            if(guideID not in guidesInEnhancer[thisEnhancer]):
+                raise Exception("next guide is not in next enhancer: guide="+
+                                str(guideID)+" enhancer="+str(thisEnhancer))
+            if(present and guideWorks): perturbedCells.add(cellID)
+            
 
                 
