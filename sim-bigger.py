@@ -23,38 +23,50 @@ def loadLibSizes(filename):
     #mean=float(sum(L))/float(len(L))
     #for i in range(len(L)): L[i]/=mean
     return L
-
+            
 #=========================================================================
 # main()
 #=========================================================================
-if(len(sys.argv)!=9):
-    exit(ProgramName.get()+" <r> <lambda> <mu> <phi> <LibSizeFile> <out-counts> <out-noise> <out-signal>\n")
-(r,Lambda,mu,phi,libSizesFile,countsFile,noiseFile,signalFile)=sys.argv[1:]
+if(len(sys.argv)!=11):
+    exit(ProgramName.get()+" <r> <lambda> <mu> <phi> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guides-enhancers> <out-rna> : "+str(len(sys.argv))+" parms given\n")
+(r,Lambda,mu,phi,libSizesFile,guidesPerEnhancer,numEnhancers,
+ guideTruthFile,guideEnhancerFile,rnaFile)=sys.argv[1:]
 r=float(r); Lambda=float(Lambda); mu=float(mu); phi=float(phi)
+guidesPerEnhancer=int(guidesPerEnhancer); numEnhancers=int(numEnhancers)
 
+# Compute NB distribution parameters
 var=mu+mu*mu/phi # from the STAN page
 P=(var-mu)/var # probability of success in NB
 N=mu*mu/(var-mu) # number of trials in NB
 
-COUNTS=open(countsFile,"wt")
-print("%%MatrixMarket matrix coordinate integer general\n3201 56882 13305244",
-      file=COUNTS) ### NEED TO CHANGE THIS
-NOISE=open(noiseFile,"wt"); SIGNAL=open(signalFile,"wt")
-L=loadLibSizes(libSizesFile)
-c=None
-for i in range(len(L)):
-    p=np.random.uniform(0,1)
-    if(p<r):
-        c=np.random.negative_binomial(N,P) ### NEED TO VERIFY THIS
-        print(i+1,file=SIGNAL)
-    else:
-        c=np.random.poisson(Lambda*L[i])
-        print(i+1,file=NOISE)
-    print(1,i+1,c,sep="\t",file=COUNTS)
+# Prepare output files
+RNA=open(rnaFile,"wt")
+GUIDES_ENHANCERS=open(guideEnhancerFile,"wt")
+GUIDE_TRUTH=open(guideTruthFile,"wt")
+#print("%%MatrixMarket matrix coordinate integer general\n0 0 0",
+#      file=GUIDE_TRUTH) ### NEED TO CHANGE THIS
 
-#====================================================================
-# sim-lib-sizes.py ../tyler/library-sizes.txt 5000 > lib-sizes1.txt
-# sim-mixture.py 0.1 1 10 1 lib-sizes1.txt counts.txt noise.txt signal.txt
+# Load library sizes
+L=loadLibSizes(libSizesFile)
+N_CELLS=len(L)
+
+# Simulate data
+#count=None
+guideID=1; enhancerID=1; geneID=1;
+for e in range(numEnhancers):
+    for g in range(guidesPerEnhancer):
+        print(guideID,enhancerID,sep="\t",file=GUIDES_ENHANCERS)
+        for cell in range(N_CELLS):
+            cellID=cell+1
+            p=np.random.uniform(0,1)
+            guidePresent=1 if p<r else 0
+            print(guideID,cellID,guidePresent,sep="\t",file=GUIDE_TRUTH)
+        guideID+=1
+    enhancerID+=1
+GUIDE_TRUTH.close()
+GUIDES_ENHANCERS.close()
+
+
 
 
 
