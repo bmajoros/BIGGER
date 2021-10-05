@@ -27,11 +27,11 @@ def loadLibSizes(filename):
 #=========================================================================
 # main()
 #=========================================================================
-if(len(sys.argv)!=7):
-    exit(ProgramName.get()+" <r> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guides-enhancers> : "+str(len(sys.argv))+" parms given\n")
-(r,libSizesFile,guidesPerEnhancer,numEnhancers,guideTruthFile,
+if(len(sys.argv)!=8):
+    exit(ProgramName.get()+" <r> <prob-guide-works> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guide-info> : "+str(len(sys.argv))+" parms given\n")
+(r,probGuideWorks,libSizesFile,guidesPerEnhancer,numEnhancers,guideTruthFile,
  guideEnhancerFile)=sys.argv[1:]
-r=float(r)
+r=float(r); probGuideWorks=float(probGuideWorks)
 guidesPerEnhancer=int(guidesPerEnhancer); numEnhancers=int(numEnhancers)
 
 # Prepare output files
@@ -47,11 +47,11 @@ N_CELLS=len(L)
 guideID=1; enhancerID=1; geneID=1;
 for e in range(numEnhancers):
     for g in range(guidesPerEnhancer):
-        print(guideID,enhancerID,file=GUIDES_ENHANCERS)
+        guideWorks=1 if np.random.uniform(0,1)<probGuideWorks else 0
+        print(guideID,enhancerID,guideWorks,file=GUIDES_ENHANCERS)
         for cell in range(N_CELLS):
             cellID=cell+1
-            p=np.random.uniform(0,1)
-            guidePresent=1 if p<r else 0
+            guidePresent=1 if np.random.uniform(0,1)<r else 0
             print(guideID,cellID,guidePresent,file=GUIDE_TRUTH)
         guideID+=1
     enhancerID+=1
