@@ -27,24 +27,16 @@ def loadLibSizes(filename):
 #=========================================================================
 # main()
 #=========================================================================
-if(len(sys.argv)!=11):
-    exit(ProgramName.get()+" <r> <lambda> <mu> <phi> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guides-enhancers> <out-rna> : "+str(len(sys.argv))+" parms given\n")
-(r,Lambda,mu,phi,libSizesFile,guidesPerEnhancer,numEnhancers,
- guideTruthFile,guideEnhancerFile,rnaFile)=sys.argv[1:]
-r=float(r); Lambda=float(Lambda); mu=float(mu); phi=float(phi)
+if(len(sys.argv)!=7):
+    exit(ProgramName.get()+" <r> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guides-enhancers> : "+str(len(sys.argv))+" parms given\n")
+(r,libSizesFile,guidesPerEnhancer,numEnhancers,guideTruthFile,
+ guideEnhancerFile)=sys.argv[1:]
+r=float(r)
 guidesPerEnhancer=int(guidesPerEnhancer); numEnhancers=int(numEnhancers)
 
-# Compute NB distribution parameters
-var=mu+mu*mu/phi # from the STAN page
-P=(var-mu)/var # probability of success in NB
-N=mu*mu/(var-mu) # number of trials in NB
-
 # Prepare output files
-RNA=open(rnaFile,"wt")
 GUIDES_ENHANCERS=open(guideEnhancerFile,"wt")
 GUIDE_TRUTH=open(guideTruthFile,"wt")
-#print("%%MatrixMarket matrix coordinate integer general\n0 0 0",
-#      file=GUIDE_TRUTH) ### NEED TO CHANGE THIS
 
 # Load library sizes
 L=loadLibSizes(libSizesFile)
