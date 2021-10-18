@@ -41,9 +41,8 @@ model {
    for (j in 1:N_CELLS) {
       // Likelihood of ATAC data:
       real log_r=0;
-      for(i in 1:N_GUIDES) {
+      for(i in 1:N_GUIDES)
          log_r += log1m_exp(log(G[i][j])+log(W[i]));
-      }
       log_r=log1m_exp(log_r);
       target += log_sum_exp(log_r+
          neg_binomial_2_lpmf(A[j]|muATAC*L_ATAC[j]*gamma,phiATAC),
