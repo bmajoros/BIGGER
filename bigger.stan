@@ -15,9 +15,7 @@ model {
    mu ~ lognormal(4,1); // ???
    phi ~ lognormal(1,0.1); // ???
    beta ~ lognormal(0,1); // ???
-   for(i in 1:N_GUIDES) {
-      W[i] ~ beta(1,3); // ???
-   }
+   for(i in 1:N_GUIDES) W[i] ~ beta(1,3); // ???
    for (j in 1:N_CELLS) {
       real log_r=0;
       for(i in 1:N_GUIDES) {
@@ -28,3 +26,4 @@ model {
                 log1m_exp(log_r)+neg_binomial_2_lpmf(Y[j]|mu*L[j],phi));
    }
 }
+

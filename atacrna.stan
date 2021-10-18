@@ -35,9 +35,7 @@ model {
    beta ~ lognormal(0,1); // ???
 
    // Prior: guide works
-   for(i in 1:N_GUIDES) {
-      W[i] ~ beta(1,3); // ???
-   }
+   for(i in 1:N_GUIDES) W[i] ~ beta(1,3); // ???
 
    // Likelihoods:
    for (j in 1:N_CELLS) {
