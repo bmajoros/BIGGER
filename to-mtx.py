@@ -16,7 +16,7 @@ import gzip
 # main()
 #=========================================================================
 if(len(sys.argv)!=3):
-    exit(ProgramName.get()+" <in.mtx.gz> <out.mtx.gz>\n")
+    exit(ProgramName.get()+" <in.mtx> <out.mtx.gz>\n")
 (infile,outfile)=sys.argv[1:]
 
 field1=set(); field2=set(); field3Sum=0
