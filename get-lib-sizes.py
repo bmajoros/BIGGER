@@ -21,7 +21,7 @@ import gzip
 #=========================================================================
 
 if len(sys.argv)!=3:
-    exit(ProgramName.get()+" <in:guides.mtx.gz> <out:library-sizes.txt>\n")
+    exit(ProgramName.get()+" <in:mRNA.mtx.gz> <out:library-sizes.txt>\n")
 (mtxFile,outFile)=sys.argv[1:]
 
 d={}
