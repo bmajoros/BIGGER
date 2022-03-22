@@ -36,7 +36,7 @@ def writeSlurm(countsFile,slurmFile,dataDir,fileIndex,libSizes):
     samplesFile=dataDir+"/samples/"+str(fileIndex)+".txt"
     posteriorsFile=dataDir+"/posteriors/"+str(fileIndex)+".txt"
     cmd="cd "+BASE_DIR+"\n"+\
-        "git/guide-mixture.py guide-mixture "+countsFile+" "+samplesFile+" "+\
+        "git/guide-mixture.py git/guide-mixture "+countsFile+" "+samplesFile+" "+\
         posteriorsFile+" "+str(NUM_WARMUP)+" "+str(NUM_KEEP)+" "+\
         " "+libSizes
     slurm.addCommand(cmd)

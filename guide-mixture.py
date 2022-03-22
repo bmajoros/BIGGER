@@ -25,15 +25,17 @@ INPUT_FILE=TempFilename.generate(".staninputs")
 INIT_FILE=TempFilename.generate(".staninit")
 OUTPUT_TEMP=TempFilename.generate(".stanoutputs")
 
-#def writeInitializationFile(filename):
-#    OUT=open(filename,"wt")
-#    r=random.uniform(0.01,0.99)
-#    mu=random.gauss(0,1)
-#    sigma=math.exp(random.gauss(0,2))
-#    print("r <-",r,file=OUT)
-#    print("mu <-",mu,file=OUT)
-#    print("sigma <-",sigma,file=OUT)
-#    OUT.close()
+def writeInitializationFile(filename):
+    OUT=open(filename,"wt")
+    r=0.5 # random.uniform(0.01,0.99)
+    Lambda=0.1
+    mu=0.5 # random.gauss(0,1)
+    sigma=1 # math.exp(random.gauss(0,2))
+    print("r <-",r,file=OUT)
+    print("lambda <- ",Lambda,file=OUT)
+    print("mu <-",mu,file=OUT)
+    print("sigma <-",sigma,file=OUT)
+    OUT.close()
 
 def writeInputsFile(stan,X,filename,L):
     OUT=open(filename,"wt")
@@ -49,7 +51,7 @@ def runSTAN(model,X,numWarmup,numSamples,infile,outfile,L):
     # Write input and initialization files
     writeInputsFile(stan,X,INPUT_FILE,L)
     global INIT_FILE
-    #writeInitializationFile(INIT_FILE)
+    writeInitializationFile(INIT_FILE)
 
     # Run STAN model
     if(DEBUG):
@@ -105,7 +107,7 @@ def writeSamples(r,mu,disp,LAMBDA, outfile):
 #=========================================================================
 (options,args)=getopt.getopt(sys.argv[1:],"s:")
 if(len(args)!=7):
-    exit(ProgramName.get()+" [-s stanfile] <model> <guide-counts.txt> <r-and-mu.txt> <Zi.txt> <#warmup> <#keep> <library-sizes.txt>\n   -s = save raw STAN file\n")
+    exit(ProgramName.get()+" [-s stanfile] <model> <guide-counts.txt> <r-and-mu.txt> <Zi.txt> <#warmup> <#keep> <normalization-factors.txt>\n   -s = save raw STAN file\n")
 (model,inFile,outfile,assignFile,numWarmup,numSamples,lib)=args
 stanFile=None
 for pair in options:

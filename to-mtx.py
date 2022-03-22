@@ -11,6 +11,8 @@ from builtins import (bytes, dict, int, list, object, range, str, ascii,
 import sys
 import ProgramName
 import gzip
+from Rex import Rex
+rex=Rex()
 
 #=========================================================================
 # main()
@@ -24,10 +26,12 @@ with open(infile,"rt") as IN:
     for line in IN:
         fields=line.rstrip().split()
         if(len(fields)!=3): raise Exception("Wrong number of fields: "+line)
-        fields=[int(x) for x in fields]
-        field1.add(fields[0])
-        field2.add(fields[1])
-        field3Sum+=fields[2]
+        #fields=[int(x) for x in fields]
+        field1.add(int(fields[0]))
+        field2.add(int(fields[1]))
+        if(rex.find("\.",fields[2])):
+            field3Sum+=float(fields[2])
+        else: field3Sum+=int(fields[2])
 IN.close()
 
 field1=len(field1); field2=len(field2); field3=field3Sum
