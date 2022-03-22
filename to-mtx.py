@@ -34,7 +34,7 @@ with open(infile,"rt") as IN:
         else: field3Sum+=int(fields[2])
 IN.close()
 
-field1=len(field1); field2=len(field2); field3=field3Sum
+field1=len(field1); field2=len(field2); field3=int(field3Sum)
 with gzip.open(outfile,"wt") as OUT:
     print("%%MatrixMarket matrix coordinate integer general",file=OUT)
     print(field1,field2,field3,file=OUT)
