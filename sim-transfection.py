@@ -12,6 +12,12 @@ import sys
 import ProgramName
 import numpy as np
 
+#=========================================================================
+# This simulator currently simulates 1 gene and arbitrarily many
+# enhancers regulating that gene, across arbitrarily many cells, with
+# a specified number of guides per enhancer.
+#=========================================================================
+
 def loadLibSizes(filename):
     L=[]
     with open(filename,"rt") as IN:
@@ -28,7 +34,7 @@ def loadLibSizes(filename):
 # main()
 #=========================================================================
 if(len(sys.argv)!=8):
-    exit(ProgramName.get()+" <r> <prob-guide-works> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guide-info> : "+str(len(sys.argv))+" parms given\n")
+    exit(ProgramName.get()+" <r> <prob-guide-works> <LibSizeFile> <num-guides-per-enhancer> <num-enhancers> <out-guide-truth> <out-guide-info>")
 (r,probGuideWorks,libSizesFile,guidesPerEnhancer,numEnhancers,guideTruthFile,
  guideEnhancerFile)=sys.argv[1:]
 r=float(r); probGuideWorks=float(probGuideWorks)
@@ -44,15 +50,17 @@ N_CELLS=len(L)
 
 # Simulate data
 #count=None
-guideID=1; enhancerID=1; geneID=1;
+guideID=1; enhancerID=1
 for e in range(numEnhancers):
     for g in range(guidesPerEnhancer):
         guideWorks=1 if np.random.uniform(0,1)<probGuideWorks else 0
-        print(guideID,enhancerID,guideWorks,file=GUIDES_ENHANCERS)
+        if(guideWorks):
+            print(guideID,enhancerID,guideWorks,file=GUIDES_ENHANCERS)
         for cell in range(N_CELLS):
             cellID=cell+1
             guidePresent=1 if np.random.uniform(0,1)<r else 0
-            print(guideID,cellID,guidePresent,file=GUIDE_TRUTH)
+            if(guidePresent):
+                print(guideID,cellID,guidePresent,file=GUIDE_TRUTH)
         guideID+=1
     enhancerID+=1
 GUIDE_TRUTH.close()
