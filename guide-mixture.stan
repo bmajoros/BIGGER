@@ -25,11 +25,8 @@ model {
       }
 }
 generated quantities {
+   int nb, poi;
    real<lower=0,upper=1> PZi[N];
-   real likeli_poisson[N];
-   real likeli_negbin[N];
-   real lambdasum=0;
-   real nbsum=0;
    for(i in 1:N) {
       real slambda = lambda * L[i];
       real snbDisp = nbDisp; // sqrt(L[i]);
@@ -37,8 +34,11 @@ generated quantities {
       real LP0=log(1-r)+poisson_lpmf(X[i]|slambda);
       real LP1=log(r)+neg_binomial_2_lpmf(X[i]|snbMean,snbDisp);
       PZi[i]=exp(LP1-log_sum_exp(LP0,LP1));
-      likeli_poisson[i] = LP0-log(1-r);
-      likeli_negbin[i] = LP1-log(r);
-   }
+      }
+  {
+  int i=discrete_range_rng(1,N);
+  nb=neg_binomial_2_rng(nbMean*L[i],nbDisp);
+  poi=poisson_rng(lambda*L[i]);
+  }
 }
 

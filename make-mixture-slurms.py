@@ -51,7 +51,7 @@ def getTotalCells(M):
 # main()
 #=========================================================================
 if(len(sys.argv)!=5):
-    exit(ProgramName.get()+" <in:guides.mtg.gz> <in:lib-sizes.txt> <out:slurm-dir> <out:data-dir>\n")
+    exit(ProgramName.get()+" <in:guides.mtx.gz> <in:lib-sizes.txt> <out:slurm-dir> <out:data-dir>\n")
 (guideFile,libSizes,slurmDir,dataDir)=sys.argv[1:]
 if(rex.find("(.*)/$",dataDir)): dataDir=rex[1]
 if(rex.find("(.*)/$",slurmDir)): slurmDir=rex[1]

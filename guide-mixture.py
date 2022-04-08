@@ -19,7 +19,7 @@ from SummaryStats import SummaryStats
 import getopt
 import random
 
-DEBUG=False
+DEBUG=True
 STDERR=TempFilename.generate(".stderr")
 INPUT_FILE=TempFilename.generate(".staninputs")
 INIT_FILE=TempFilename.generate(".staninit")
@@ -56,6 +56,7 @@ def runSTAN(model,X,numWarmup,numSamples,infile,outfile,L):
     # Run STAN model
     if(DEBUG):
         print(stan.getCmd(numWarmup,numSamples,INPUT_FILE,OUTPUT_TEMP,STDERR,INIT_FILE))
+        exit()
     stan.run(numWarmup,numSamples,INPUT_FILE,OUTPUT_TEMP,STDERR,INIT_FILE)
 
     # Parse MCMC output

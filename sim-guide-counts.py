@@ -28,14 +28,15 @@ def loadLibSizes(filename):
 #=========================================================================
 # main()
 #=========================================================================
-if(len(sys.argv)!=7):
-    exit(ProgramName.get()+" <guide-truth.mtx.gz> <lambda> <mu> <phi> <LibSizeFile> <out-counts>\n")
-(truthFile,Lambda,unscaledMu,phi,libSizesFile,countsFile)=sys.argv[1:]
+if(len(sys.argv)!=8):
+    exit(ProgramName.get()+" <guide-truth.mtx.gz> <lambda> <mu> <phi> <LibSizeFile> <out:counts.txt> <out:dropout.txt>\n")
+(truthFile,Lambda,unscaledMu,phi,libSizesFile,countsFile,dropoutFile)=sys.argv[1:]
 Lambda=float(Lambda); unscaledMu=float(unscaledMu); phi=float(phi)
 
 # Open files:
 COUNTS=open(countsFile,"wt")
 L=loadLibSizes(libSizesFile)
+DROPOUT=open(dropoutFile,"wt")
 
 # Simulate data:
 with gzip.open(truthFile,"rt") as IN:
@@ -53,8 +54,9 @@ with gzip.open(truthFile,"rt") as IN:
             count=np.random.negative_binomial(N,P)
         else:
             count=np.random.poisson(Lambda*libSize)
-        print(guideID,cellID,count,sep="\t",file=COUNTS)
-
+        if(count>0): print(guideID,cellID,count,sep="\t",file=COUNTS)
+        elif(present>0):
+            print(guideID,cellID,libSize,mu,var,N,count,sep="\t",file=DROPOUT)
 
 
 

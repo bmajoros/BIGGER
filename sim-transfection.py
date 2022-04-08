@@ -54,8 +54,7 @@ guideID=1; enhancerID=1
 for e in range(numEnhancers):
     for g in range(guidesPerEnhancer):
         guideWorks=1 if np.random.uniform(0,1)<probGuideWorks else 0
-        if(guideWorks):
-            print(guideID,enhancerID,guideWorks,file=GUIDES_ENHANCERS)
+        print(guideID,enhancerID,guideWorks,file=GUIDES_ENHANCERS)
         for cell in range(N_CELLS):
             cellID=cell+1
             guidePresent=1 if np.random.uniform(0,1)<r else 0

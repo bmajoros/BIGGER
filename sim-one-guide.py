@@ -19,7 +19,7 @@ def loadLibSizes(filename):
             fields=line.rstrip().split()
             if(len(fields)!=2): raise Exception("Wrong number of fields in "+
                                                 filename)
-            L.append(int(fields[1]))
+            L.append(float(fields[1]))
     #mean=float(sum(L))/float(len(L))
     #for i in range(len(L)): L[i]/=mean
     return L
@@ -28,13 +28,9 @@ def loadLibSizes(filename):
 # main()
 #=========================================================================
 if(len(sys.argv)!=9):
-    exit(ProgramName.get()+" <r> <lambda> <mu> <phi> <LibSizeFile> <out-counts> <out-noise> <out-signal>\n")
-(r,Lambda,mu,phi,libSizesFile,countsFile,noiseFile,signalFile)=sys.argv[1:]
-r=float(r); Lambda=float(Lambda); mu=float(mu); phi=float(phi)
-
-var=mu+mu*mu/phi # from the STAN page
-P=(var-mu)/var # probability of success in NB
-N=mu*mu/(var-mu) # number of trials in NB
+    exit(ProgramName.get()+" <r> <lambda> <mu> <phi> <library-normalization-factors> <out-counts> <out-noise> <out-signal>\n")
+(r,Lambda,MU,phi,libSizesFile,countsFile,noiseFile,signalFile)=sys.argv[1:]
+r=float(r); Lambda=float(Lambda); MU=float(MU); phi=float(phi)
 
 COUNTS=open(countsFile,"wt")
 print("%%MatrixMarket matrix coordinate integer general\n3201 56882 13305244",
@@ -45,7 +41,14 @@ c=None
 for i in range(len(L)):
     p=np.random.uniform(0,1)
     if(p<r):
-        c=np.random.negative_binomial(N,P) ### NEED TO VERIFY THIS
+        mu=MU*L[i]
+        var=mu+mu*mu/phi # from the STAN page
+        P=(var-mu)/var # probability of success in NB
+        N=mu*mu/(var-mu) # number of failures in NB
+        #g=np.random.gamma(N,(1-p)/p)
+        #c=np.random.poisson(g)
+        c=np.random.negative_binomial(N,1-P) ###
+        #print("P=",P,"N=",N," ==> ",c)
         print(i+1,file=SIGNAL)
     else:
         c=np.random.poisson(Lambda*L[i])
